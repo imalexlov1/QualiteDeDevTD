@@ -61,6 +61,7 @@ public class Game implements Runnable
     
     private GamePanel gamePanel;		// gamePanel object 
     private GameState state;	   		// The current game state
+    private GameProfile currentProfile;
     
     private int frameCounter;			// keeps track of frame updates
     private long lastTime;				// keeps track of time
@@ -184,24 +185,24 @@ public class Game implements Runnable
         // Create the JFrame and the JPanel
         JFrame f = new JFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-        f.setTitle("Basil Vetas's Tower Defense Game");
+        f.setTitle("Alex's Tower Defense Game");
         f.setContentPane(gamePanel);
         f.pack();
         f.setVisible(true); 
         
     	// creates a new ImageLoader object and loads the background image
 		ImageLoader loader = ImageLoader.getLoader();
-        backdrop = loader.getImage("resources/stars.jpg");
-        
+        backdrop = loader.getImage("stars.jpg");
+        this.currentProfile = GameDifficulty.HARD.getProfile(); //On peut changer la difficulté ici
         JOptionPane.showMessageDialog(null,  "Rules of the game:\n" +
         		"1. Place towers on the map to stop enemies from reaching the Earth.\n" +
         		"2. Black holes shoot star dust and are cheaper, Suns shoot sun spots and are faster.\n" +
         		"3. You earn money for stopping enemies, but as the game progresses, new enemies attack.\n" +
-        		"4. If you stop 500 enemies you win, but if you lose 10 lives the game is over.");
+        		"4. If you stop "+ this.currentProfile.winCondition+" enemies you win, but if you lose "+ this.currentProfile.startLives +" lives the game is over.");
         
         // fill counters
-        livesCounter = 10;		// gives the player 10 lives
-        scoreCounter = 200;		// give the user 500 points to begin
+        livesCounter = currentProfile.startLives;
+        scoreCounter = currentProfile.startMoney;
         killsCounter = 0;		// begin with 0 kills
         
         // Reset the frame counter and time 
@@ -211,7 +212,7 @@ public class Game implements Runnable
         // Use the loader to build a scanner on the path data text file, then build the 
         // path points object from the data in the file.
 		ClassLoader myLoader = this.getClass().getClassLoader();
-        InputStream pointStream = myLoader.getResourceAsStream("resources/path_1.txt");
+        InputStream pointStream = myLoader.getResourceAsStream("path_1.txt");
         Scanner s = new Scanner (pointStream);
         line  = new PathPoints(s);
 
@@ -306,10 +307,10 @@ public class Game implements Runnable
     		livesCounter = 0;
     	}
     	
-    	if(killsCounter >= 500)
-    	{	gameIsWon = true;
-    		killsCounter = 500;
-    	}
+    	if(killsCounter >= currentProfile.winCondition) { 
+            gameIsWon = true;
+            killsCounter = currentProfile.winCondition;
+        }
     	
         // After we have updated the objects in the game, we need to
         //   redraw them.  Enter the 'DRAW' state.
@@ -407,7 +408,7 @@ public class Game implements Runnable
         	newSun.draw(g);
         
         ImageLoader loader = ImageLoader.getLoader();	
-		Image endGame = loader.getImage("resources/game_over.png"); // load game over image
+		Image endGame = loader.getImage("game_over.png"); // load game over image
     	
         if(livesCounter <= 0)										// if game is lost
         	g.drawImage(endGame, 0, 0, null);						// draw "game over"

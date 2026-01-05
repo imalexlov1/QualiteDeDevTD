@@ -1,13 +1,18 @@
-import org.junit.Test;
+package game;
+
 import static org.junit.Assert.*;
+import org.junit.Test;
+
+
 
 public class DifficultyTest {
 
     @Test
     public void testEasyModeConfiguration() {
-        // J'imagine une Enum ou une classe qui porte les config
+        // On récupère le profil via l'Enum
         GameProfile profile = GameDifficulty.EASY.getProfile();
         
+        // Assertions
         assertEquals("L'argent de départ doit être 400", 400, profile.startMoney);
         assertEquals("Les vies doivent être 20", 20, profile.startLives);
         assertEquals("Objectif de kills doit être 250", 250, profile.winCondition);

@@ -14,7 +14,10 @@ abstract public class Tower
 	protected int anchorX;			// shifts X coordinate
 	protected int anchorY;			// shifts Y coordinate
 	protected double timeSinceLastFire;// time since last effect was fired
-	
+	protected int cost;
+    protected int range;
+
+   
 	public void draw(Graphics g)
 	{
 		// Draws tower object to location specified by user
@@ -28,10 +31,19 @@ abstract public class Tower
 	 * 
 	 * @param c
 	 */
+
 	public void setPosition(Coordinate c)
 	{
 		position = c;
 	}
+	
+	public int getCost() { 
+		return cost; 
+	}
+
+    public int getRange() { 
+		return range;
+	 }
 	
 	abstract void interact(Game game, double deltaTime);
 }
