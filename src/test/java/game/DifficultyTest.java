@@ -26,4 +26,13 @@ public class DifficultyTest {
         assertEquals(5, profile.startLives);
         assertEquals(1000, profile.winCondition);
     }
+
+    @Test
+    public void testNormalModeConfiguration() {
+        GameProfile profile = GameDifficulty.NORMAL.getProfile();
+        
+        assertEquals(200, profile.startMoney);
+        assertEquals(10, profile.startLives);
+        assertEquals(500, profile.winCondition);
+    }
 }

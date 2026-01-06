@@ -25,14 +25,8 @@ import javax.swing.JOptionPane;
 enum GameState { SETUP, UPDATE, DRAW, WAIT, END }
 
 /**
- * This class represents the playable game.  If you create an
- * object from this class, you have created an instance of the
- * game, complete with JFrame, panel, etc.
- * 
- * The class also has a main method so that the class can
- * be run as an application.
- * 
- * @author basilvetas
+ * This class represents the playable game.
+ * @author Yassir Boulouiha Gnaoui & Alex Lovin
  */
 public class Game implements Runnable
 {
@@ -72,6 +66,9 @@ public class Game implements Runnable
     
     private boolean placingSun;			// true if tower is being placed
     private Tower newSun; 				// variable to hold new tower objects
+    private boolean placingMissile;     // true if tower is being placed
+    private Tower newMissile;           // variable to hold new tower objects
+    private int currentLevel = 1;       // current level of the game
     private boolean gameIsOver;			// indicates if game is lost
     private boolean gameIsWon;			// indicates if game is won
     
@@ -242,6 +239,60 @@ public class Game implements Runnable
     }
     
     /**
+     * @author Yassir Boulouiha Gnaoui & Alex Lovin
+     */
+    public void placeMissiles()
+    {
+        if(gamePanel.mouseIsPressed && !placingBlackHole && !placingSun && !placingMissile)
+        {
+            if(gamePanel.mouseX >= 620 && gamePanel.mouseX <= 680 && gamePanel.mouseY >= 350 && gamePanel.mouseY <= 410)
+            {
+                if(scoreCounter >= 60)
+                {
+                    placingMissile = true;
+                    newMissile = new Missile(gamePanel.getCoordinate());
+                }
+            }
+        }
+        
+        if(placingMissile)
+        {
+            newMissile.setPosition(gamePanel.getCoordinate());
+            if(gamePanel.mouseIsPressed && gamePanel.mouseX < 600)
+            {
+                towers.add(newMissile);
+                scoreCounter -= newMissile.getCost();
+                placingMissile = false;
+            }
+        }
+    }
+
+    /**
+     * @author Yassir Boulouiha Gnaoui & Alex Lovin
+     */
+    private void startLevel2() {
+        currentLevel = 2;
+        killsCounter = 0;
+        // Remise à zéro des ennemis et effets pour le nouveau niveau
+        enemies.clear();
+        effects.clear();
+        
+        // Chargement du nouveau chemin
+        try {
+            ClassLoader myLoader = this.getClass().getClassLoader();
+            // On suppose qu'un fichier path_2.txt existe ou on réutilise path_1 avec une transformation
+            InputStream pointStream = myLoader.getResourceAsStream("path_1.txt"); 
+            Scanner s = new Scanner(pointStream);
+            line = new PathPoints(s);
+            // Note: Pour un vrai niveau 2, on utiliserait path_2.txt
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        JOptionPane.showMessageDialog(null, "Level 1 Complete! Starting Level 2...");
+    }
+
+    /**
      * This function is called repeatedly (once per game 'frame').
      * The update function should change the positions of objects in the game.
      * (It could also add new enemies, detect collisions, etc.)  This
@@ -301,6 +352,7 @@ public class Game implements Runnable
     	// Place towers if user chooses
     	this.placeBlackHoles();
     	this.placeSuns();
+        this.placeMissiles();
     	
     	if(livesCounter <= 0)
     	{	gameIsOver = true;
@@ -308,8 +360,12 @@ public class Game implements Runnable
     	}
     	
     	if(killsCounter >= currentProfile.winCondition) { 
-            gameIsWon = true;
-            killsCounter = currentProfile.winCondition;
+            if (currentLevel == 1) {
+                startLevel2();
+            } else {
+                gameIsWon = true;
+                killsCounter = currentProfile.winCondition;
+            }
         }
     	
         // After we have updated the objects in the game, we need to
@@ -375,9 +431,11 @@ public class Game implements Runnable
         g.drawString("Lives Remaining: " + livesCounter, 605, 100);	// lives counter
         g.drawString("Money Earned: " + scoreCounter, 605, 150);	// score counter
         g.drawString("Enemies Stopped: " + killsCounter, 605, 200);
-        g.drawString("Blackhole Cost: 100", 610, 380);				// cost for black hole towers
-        g.drawString("Sun Cost: 300", 640, 530);					// cost for sun towers
-        g.setFont(new Font("Lucidia Sans", Font.ITALIC, 28));		
+        g.drawString("Level: " + currentLevel, 605, 220);
+        g.drawString("BlackHole (40)", 605, 380);
+        g.drawString("Sun (100)", 605, 530);
+        g.drawString("Missile (60)", 605, 580);
+        g.setFont(new Font("Lucidia Sans", Font.ITALIC, 28));
         g.drawString("Planet Defense", 600, 50);					// writes title
         g.drawLine(600, 50, 800, 50);								// underscore
         g.drawString("Towers", 640, 240);							// writes towers
@@ -398,7 +456,7 @@ public class Game implements Runnable
         // draw tower in menu area
         Sun sun = new Sun(new Coordinate(700, 450));
         sun.draw(g);
-        
+
         // draws blackhole object with mouse movements
         if(newBlackHole != null)
         	newBlackHole.draw(g);
@@ -406,6 +464,10 @@ public class Game implements Runnable
         // draws sun object with mouse movements
         if(newSun != null)
         	newSun.draw(g);
+
+        // draws missile object with mouse movements
+        if(newMissile != null)
+            newMissile.draw(g);
         
         ImageLoader loader = ImageLoader.getLoader();	
 		Image endGame = loader.getImage("game_over.png"); // load game over image

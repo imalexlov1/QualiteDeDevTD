@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * This class creates a single blackhole tower
+ * @author Yassir Boulouiha Gnaoui & Alex Lovin
  */
 public class BlackHole extends Tower
 {
@@ -17,6 +18,8 @@ public class BlackHole extends Tower
 		this.position = pos;
 		this.anchorX = -40;
 		this.anchorY = -40;
+		this.cost = 40; // Exemple de coût pour BlackHole
+		this.range = 80;
 	}
 	
 	/**

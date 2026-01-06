@@ -1,5 +1,8 @@
 package game;
 
+/**
+ * @author Yassir Boulouiha Gnaoui & Alex Lovin
+ */
 public class GameProfile {
     public int startMoney;
     public int startLives;

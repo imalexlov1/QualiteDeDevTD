@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * This class creates a single sun tower
+ * @author Yassir Boulouiha Gnaoui & Alex Lovin
  */
 public class Sun extends Tower
 {
@@ -17,6 +18,8 @@ public class Sun extends Tower
 		this.position = pos;
 		this.anchorX = -50;
 		this.anchorY = -50;
+		this.cost = 100; // Exemple de coût pour Sun
+		this.range = 100;
 	}
 
 	/**
