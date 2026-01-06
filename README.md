@@ -3,6 +3,7 @@
 ## Équipe
 - **Yassir Boulouiha Gnaoui**
 - **Alex Lovin**
+- **Amina ABAYEV** 
 
 ## Tableau de Traçabilité
 
