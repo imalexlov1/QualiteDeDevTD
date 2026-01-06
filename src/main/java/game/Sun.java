@@ -18,7 +18,7 @@ public class Sun extends Tower
 		this.position = pos;
 		this.anchorX = -50;
 		this.anchorY = -50;
-		this.cost = 100; // Exemple de coût pour Sun
+		this.cost = 300; // Mis à jour selon consigne
 		this.range = 100;
 	}
 

@@ -1,7 +1,7 @@
 package game;
 
 /**
- * @author Yassir Boulouiha Gnaoui & Alex Lovin
+ * @author Yassir Boulouiha Gnaoui & Alex Lovin & Amina Abayev
  */
 public enum GameDifficulty {
     EASY, NORMAL, HARD;

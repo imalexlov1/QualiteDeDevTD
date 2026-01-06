@@ -190,7 +190,21 @@ public class Game implements Runnable
     	// creates a new ImageLoader object and loads the background image
 		ImageLoader loader = ImageLoader.getLoader();
         backdrop = loader.getImage("stars.jpg");
-        this.currentProfile = GameDifficulty.HARD.getProfile(); //On peut changer la difficulté ici
+
+        // Menu de sélection de la difficulté
+        String[] options = {"EASY", "NORMAL", "HARD"};
+        int choice = JOptionPane.showOptionDialog(null, "Choisissez le niveau de difficulté :", "Difficulté",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+        
+        GameDifficulty difficulty;
+        switch (choice) {
+            case 0: difficulty = GameDifficulty.EASY; break;
+            case 2: difficulty = GameDifficulty.HARD; break;
+            case 1:
+            default: difficulty = GameDifficulty.NORMAL; break;
+        }
+        
+        this.currentProfile = difficulty.getProfile();
         JOptionPane.showMessageDialog(null,  "Rules of the game:\n" +
         		"1. Place towers on the map to stop enemies from reaching the Earth.\n" +
         		"2. Black holes shoot star dust and are cheaper, Suns shoot sun spots and are faster.\n" +
@@ -245,7 +259,7 @@ public class Game implements Runnable
     {
         if(gamePanel.mouseIsPressed && !placingBlackHole && !placingSun && !placingMissile)
         {
-            if(gamePanel.mouseX >= 620 && gamePanel.mouseX <= 680 && gamePanel.mouseY >= 350 && gamePanel.mouseY <= 410)
+            if(gamePanel.mouseX >= 650 && gamePanel.mouseX <= 750 && gamePanel.mouseY >= 540 && gamePanel.mouseY <= 640)
             {
                 if(scoreCounter >= 60)
                 {
@@ -288,8 +302,11 @@ public class Game implements Runnable
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // Ajout d'un nouvel ennemi spécifique au niveau 2 (Comet par exemple, ou on pourrait en créer un nouveau)
+        // Ici on va juste afficher un message
         
-        JOptionPane.showMessageDialog(null, "Level 1 Complete! Starting Level 2...");
+        JOptionPane.showMessageDialog(null, "Level 1 Complete! Starting Level 2...\nA new enemy appears!");
     }
 
     /**
@@ -432,9 +449,12 @@ public class Game implements Runnable
         g.drawString("Money Earned: " + scoreCounter, 605, 150);	// score counter
         g.drawString("Enemies Stopped: " + killsCounter, 605, 200);
         g.drawString("Level: " + currentLevel, 605, 220);
-        g.drawString("BlackHole (40)", 605, 380);
-        g.drawString("Sun (100)", 605, 530);
-        g.drawString("Missile (60)", 605, 580);
+        
+        g.setFont(new Font("Lucidia Sans", Font.BOLD, 14));
+        g.drawString("BlackHole (100)", 605, 380);
+        g.drawString("Sun (300)", 605, 530);
+        g.drawString("Missile (60)", 605, 600);
+        
         g.setFont(new Font("Lucidia Sans", Font.ITALIC, 28));
         g.drawString("Planet Defense", 600, 50);					// writes title
         g.drawLine(600, 50, 800, 50);								// underscore
@@ -457,6 +477,14 @@ public class Game implements Runnable
         Sun sun = new Sun(new Coordinate(700, 450));
         sun.draw(g);
 
+        // draw box around missile icon
+        g.setColor(new Color(224, 224, 224));
+        g.fillRect(650, 540, 100, 100);
+
+        // draw tower in menu area
+        Missile missile = new Missile(new Coordinate(700, 590));
+        missile.draw(g);
+
         // draws blackhole object with mouse movements
         if(newBlackHole != null)
         	newBlackHole.draw(g);
@@ -475,9 +503,10 @@ public class Game implements Runnable
         if(livesCounter <= 0)										// if game is lost
         	g.drawImage(endGame, 0, 0, null);						// draw "game over"
 
-		if(killsCounter >= 500)										// if game is lost
-		{	g.setFont(new Font("Braggadocio", Font.ITALIC, 90));		
-        	g.drawString("You Win!!!", 10, 250);					// draw "game over"
+		if(gameIsWon)										// if game is won
+		{	g.setFont(new Font("Braggadocio", Font.ITALIC, 90));
+            g.setColor(Color.YELLOW);
+        	g.drawString("You Win!!!", 10, 250);					// draw victory message
 		}
 		
         // Drawing is now complete.  Enter the WAIT state to create a small

@@ -13,6 +13,18 @@ public class MissileTowerTest {
 
 
         assertEquals("Le coût doit être de 60", 60, missile.getCost());
-        assertEquals("La portée doit être de 20", 20, missile.getRange());
+        assertEquals("La portée doit être de 100", 100, missile.getRange());
+    }
+
+    @Test
+    public void testBlackHoleTowerStats() {
+        BlackHole bh = new BlackHole(new Coordinate(0,0));
+        assertEquals(100, bh.getCost());
+    }
+
+    @Test
+    public void testSunTowerStats() {
+        Sun sun = new Sun(new Coordinate(0,0));
+        assertEquals(300, sun.getCost());
     }
 }

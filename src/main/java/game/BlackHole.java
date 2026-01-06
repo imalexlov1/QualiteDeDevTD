@@ -18,7 +18,7 @@ public class BlackHole extends Tower
 		this.position = pos;
 		this.anchorX = -40;
 		this.anchorY = -40;
-		this.cost = 40; // Exemple de coût pour BlackHole
+		this.cost = 100; // Mis à jour selon consigne
 		this.range = 80;
 	}
 	
